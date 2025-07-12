@@ -15,5 +15,7 @@ export async function makeThingsBoardLogin(): Promise<ThingsBoardAuthResponse> {
     }
   )
 
-  return loginResponse.data
+  const { token, refreshToken } = loginResponse.data
+
+  return { token, refreshToken }
 }

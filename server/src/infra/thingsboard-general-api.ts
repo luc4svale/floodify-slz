@@ -1,6 +1,7 @@
 import axios, { type InternalAxiosRequestConfig } from 'axios'
 import { env } from '../env/index.ts'
-import { getTinghsBoardAccessToken } from '../util/get-thingsboard-access-token.ts'
+import { getCurrentToken } from '../util/get-current-token.ts'
+import { makeThingsBoardRefreshLogin } from '../util/make-thingsboard-refresh-login.ts'
 
 export const thingsBoardGeneralAPI = axios.create({
   baseURL: `${env.THINGSBOARD_API_BASE_URL}`,
@@ -10,12 +11,30 @@ export const thingsBoardGeneralAPI = axios.create({
 
 thingsBoardGeneralAPI.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
-    const { token } = await getTinghsBoardAccessToken()
+    const token = await getCurrentToken()
 
     if (config.headers && token) {
       config.headers.Authorization = `Bearer ${token}`
     }
 
     return config
+  }
+)
+
+thingsBoardGeneralAPI.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true
+
+      const { token } = await makeThingsBoardRefreshLogin()
+
+      originalRequest.headers.Authorization = `Bearer ${token}`
+      return thingsBoardGeneralAPI(originalRequest)
+    }
+
+    return Promise.reject(error)
   }
 )

@@ -10,7 +10,7 @@ POST {{baseUrl}}/devices
 content-type: application/json
 
 {
-    "label": "UEMA",
+    "label": "UNINASSAU",
     "longitude": -44.5597509399476177,
     "latitude": -66.211265437770614
 }
