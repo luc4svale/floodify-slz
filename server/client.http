@@ -1,0 +1,37 @@
+@baseUrl=http://localhost:3333
+
+# Health check
+GET {{baseUrl}}/health
+
+###
+
+# Create Device
+POST {{baseUrl}}/devices
+content-type: application/json
+
+{
+    "label": "UEMA",
+    "longitude": -44.5597509399476177,
+    "latitude": -66.211265437770614
+}
+
+###
+
+# List Devices
+GET {{baseUrl}}/devices/
+
+###
+
+# Show Device
+GET {{baseUrl}}/devices/aecd7546-b9fb-4693-b044-86593064bae9
+
+###
+
+# Get Latest Device Telemetry
+GET {{baseUrl}}/devices/5154f660-5c5a-11f0-8543-cf220f4e0102/telemetry/latest
+
+###
+
+# Get Device Telemetry
+GET {{baseUrl}}/devices/5154f660-5c5a-11f0-8543-cf220f4e0102/telemetry
+
